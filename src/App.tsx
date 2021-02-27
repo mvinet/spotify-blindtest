@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useMemo} from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import {ThemeProvider} from "@material-ui/styles"
+import {useLocalStorage} from "./hook/useLocalStorage";
+import {NightsStay, WbSunny} from "@material-ui/icons";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import {AppBar, CssBaseline, IconButton, Toolbar, Typography} from "@material-ui/core";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+
+const useStyles = makeStyles(() => ({
+    title: {
+        flexGrow: 1
+    }
+}))
+
+const App = () => {
+    const classes = useStyles()
+    const [darkMode, setDarkMode] = useLocalStorage("dark", true)
+
+    const theme = useMemo(() => createMuiTheme({
+        palette: {
+            type: darkMode ? "dark" : "light",
+        }
+    }), [darkMode])
+
+    return <ThemeProvider theme={theme}>
+        <CssBaseline/>
+        <AppBar position={"static"}>
+            <Toolbar>
+                <Typography variant={"h6"} className={classes.title}>
+                    Blind Test
+                </Typography>
+
+                <IconButton onClick={() => setDarkMode(!darkMode)}>
+                    {darkMode ? <WbSunny/> : <NightsStay/>}
+                </IconButton>
+            </Toolbar>
+        </AppBar>
+
+    </ThemeProvider>
 }
 
 export default App;
