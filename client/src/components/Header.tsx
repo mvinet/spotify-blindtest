@@ -11,7 +11,7 @@ const useStyles = makeStyles(() => ({
 
 interface HeaderProps {
     darkMode: boolean,
-    setDarkMode: (darkMode: boolean) => any
+    setDarkMode: (darkMode: boolean) => void
 }
 
 const Header = (props: HeaderProps) => {
