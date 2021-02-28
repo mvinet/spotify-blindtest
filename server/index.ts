@@ -17,4 +17,4 @@ app.get("*", (req, res) => {
 })
 
 socket(server)
-server.listen(8080, () => console.log("Server listening"))
+server.listen(process.env.PORT || 8080, () => console.log("Server listening"))
