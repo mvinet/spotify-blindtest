@@ -1,7 +1,28 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Container, Grid, Paper, TextField, Typography} from "@material-ui/core";
+import {Socket} from "socket.io-client";
 
-const GamePage = () => {
+interface GamePageProps {
+    socket: Socket
+}
+
+interface Player {
+    id: string,
+    username: string
+}
+
+const GamePage = (props: GamePageProps) => {
+    const [players, setPlayers] = useState<Array<Player>>([])
+
+    useEffect(() => {
+        props.socket.emit("game/players")
+
+        props.socket.on("game/players", (users: Player[]) => {
+            console.log("Receiving game/players")
+            setPlayers(users)
+        })
+    }, [props.socket])
+
     return <Grid container justify={"center"}>
         <Grid item xs={12}>
             <Paper>
@@ -25,7 +46,7 @@ const GamePage = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
-
+                                {players.map(player => <div key={player.id}>{player.username}</div>)}
                             </Grid>
                         </Grid>
 

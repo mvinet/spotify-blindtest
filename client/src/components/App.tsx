@@ -1,15 +1,21 @@
-import React, {useEffect, useMemo} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import {ThemeProvider} from "@material-ui/styles"
-import {useLocalStorage} from "../hook/useLocalStorage"
+import useLocalStorage from "../hook/useLocalStorage"
 import {Container, CssBaseline, Grid} from "@material-ui/core"
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme"
 import {DARK_MODE} from "../constantes/localStorage"
 import Header from "./Header";
+import LoginPage from "./LoginPage";
+import {Socket} from "socket.io-client";
 import GamePage from "./GamePage/GamePage";
-import {io} from "socket.io-client"
 
-const App = () => {
+interface AppProps {
+    socket: Socket
+}
+
+const App = (props: AppProps) => {
     const [darkMode, setDarkMode] = useLocalStorage(DARK_MODE, true)
+    const [userConnected, setUserConnected] = useState(null)
 
     const theme = useMemo(() => createMuiTheme({
         palette: {
@@ -18,8 +24,10 @@ const App = () => {
     }), [darkMode])
 
     useEffect(() => {
-        io()
-    }, [])
+        props.socket.on("game/connected", (user: any) => {
+            setUserConnected(user)
+        })
+    }, [props.socket])
 
     return <ThemeProvider theme={theme}>
         <CssBaseline/>
@@ -29,7 +37,12 @@ const App = () => {
             </Grid>
             <Grid item xs={12}>
                 <Container>
-                    <GamePage/>
+                    {
+                        !userConnected ?
+                            <LoginPage socket={props.socket}/>
+                            :
+                            <GamePage socket={props.socket}/>
+                    }
                 </Container>
             </Grid>
         </Grid>
