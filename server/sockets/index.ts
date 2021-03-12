@@ -8,7 +8,6 @@ const initSocket = (app: httpServer) => {
     io = new Server(app)
 
     io.on("connection", (socket: Socket) => {
-        console.log(socket.id)
         game(socket)
     })
 }

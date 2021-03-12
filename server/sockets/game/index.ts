@@ -9,6 +9,15 @@ interface GamePlayerJoin {
 }
 
 const initGame = (socket: Socket) => {
+    joinGame(socket)
+
+    socket.on("disconnect", () => {
+        removeUser(socket.id)
+        socket.broadcast.emit(GAME_PLAYERS, getUsers())
+    })
+}
+
+const joinGame = (socket: Socket) => {
     socket.on("game/join", (gamePlayerJoin: GamePlayerJoin) => {
         const user = new User(socket.id, gamePlayerJoin.username)
         save(user)
@@ -17,11 +26,9 @@ const initGame = (socket: Socket) => {
         socket.broadcast.emit(GAME_PLAYERS, getUsers())
 
         socket.on(GAME_PLAYERS, () => socket.emit(GAME_PLAYERS, getUsers()))
-    })
 
-    socket.on("disconnect", () => {
-        removeUser(socket.id)
-        socket.broadcast.emit(GAME_PLAYERS, getUsers())
+
+
     })
 }
 

@@ -3,12 +3,12 @@ export class User {
     /**
      * Socket Id of connected User
      */
-    id: string
+    private readonly _id: string
 
     /**
      * Name of the user
      */
-    username: string
+    private readonly _username: string
 
     /**
      * Create a new User with the following params
@@ -16,7 +16,15 @@ export class User {
      * @param username the Name of the user
      */
     constructor(id: string, username: string) {
-        this.id = id
-        this.username = username
+        this._id = id
+        this._username = username
+    }
+
+    get id(): string {
+        return this._id;
+    }
+
+    get username(): string {
+        return this._username;
     }
 }
