@@ -1,6 +1,5 @@
 import {Router} from "express"
-import {getUsers} from "../dao/userDao";
-import {getGames} from "../dao/gameDao";
+import {getGame} from "../dao/gameDao"
 
 const router = Router()
 
@@ -10,12 +9,8 @@ router.get("/ping", (req, res) => {
     })
 })
 
-router.get("/users", (req, res) => {
-    res.json(getUsers())
-})
-
 router.get("/games", (req, res) => {
-    res.json(getGames())
+    res.json(getGame())
 })
 
 export default router

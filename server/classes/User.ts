@@ -21,10 +21,10 @@ export class User {
     }
 
     get id(): string {
-        return this._id;
+        return this._id
     }
 
     get username(): string {
-        return this._username;
+        return this._username
     }
 }

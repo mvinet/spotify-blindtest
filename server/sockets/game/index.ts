@@ -1,6 +1,6 @@
-import {Socket} from "socket.io";
-import {getUsers, removeUser, save} from "../../dao/userDao"
-import {User} from "../../classes/User";
+import {Socket} from "socket.io"
+import {User} from "../../classes/User"
+import {addPlayerInGame, createGame, getGame, removeGame, removePlayerInGame} from "../../dao/gameDao"
 
 const GAME_PLAYERS = "game/players"
 
@@ -8,28 +8,41 @@ interface GamePlayerJoin {
     username: string
 }
 
-const initGame = (socket: Socket) => {
-    joinGame(socket)
+export default (socket: Socket) => {
+
+    socket.on("game/join", (gamePlayerJoin: GamePlayerJoin) => {
+        joinGame(socket, gamePlayerJoin)
+    })
 
     socket.on("disconnect", () => {
-        removeUser(socket.id)
-        socket.broadcast.emit(GAME_PLAYERS, getUsers())
+        removePlayer(socket)
     })
 }
 
-const joinGame = (socket: Socket) => {
-    socket.on("game/join", (gamePlayerJoin: GamePlayerJoin) => {
-        const user = new User(socket.id, gamePlayerJoin.username)
-        save(user)
+const removePlayer = (socket: Socket) => {
+    removePlayerInGame(socket.id)
+    socket.broadcast.emit(GAME_PLAYERS, getGame().users)
 
-        socket.emit("game/connected", user)
-        socket.broadcast.emit(GAME_PLAYERS, getUsers())
+    if (getGame().users.length === 0) {
+        removeGame()
+    }
 
-        socket.on(GAME_PLAYERS, () => socket.emit(GAME_PLAYERS, getUsers()))
-
-
-
-    })
 }
 
-export default initGame
+const joinGame = (socket: Socket, gamePlayerJoin: GamePlayerJoin) => {
+    const user = new User(socket.id, gamePlayerJoin.username)
+
+    if (!getGame()) {
+        createGame(user)
+    }
+
+    socket.join(getGame().id)
+
+    addPlayerInGame(user)
+
+    socket.emit("game/connected", getGame())
+    socket.broadcast.emit(GAME_PLAYERS, getGame().users)
+
+    socket.on(GAME_PLAYERS, () => socket.emit(GAME_PLAYERS, getGame().users))
+
+}

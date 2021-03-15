@@ -50,6 +50,7 @@ const LoginPage = (props: LoginPageProps) => {
                                 label={"Room"}
                                 fullWidth
                                 value={room}
+                                disabled
                                 onChange={handleChangeRoom}
                                 InputProps={{
                                     startAdornment: <InputAdornment position={"start"}>

@@ -1,18 +1,17 @@
-import React, {useEffect, useState} from "react";
-import {Container, Grid, Paper, TextField, Typography} from "@material-ui/core";
-import {Socket} from "socket.io-client";
+import React, {useEffect, useState} from "react"
+import {Container, Grid, Paper, TextField, Typography} from "@material-ui/core"
+import {Socket} from "socket.io-client"
+import Player from "../../model/Player"
+import Game from "../../model/Game"
+import CardMusic from "./CardMusic"
 
 interface GamePageProps {
-    socket: Socket
-}
-
-interface Player {
-    id: string,
-    username: string
+    socket: Socket,
+    game: Game
 }
 
 const GamePage = (props: GamePageProps) => {
-    const [players, setPlayers] = useState<Array<Player>>([])
+    const [players, setPlayers] = useState<Player[]>(props.game._users)
 
     useEffect(() => {
         props.socket.emit("game/players")
@@ -21,6 +20,7 @@ const GamePage = (props: GamePageProps) => {
             console.log("Receiving game/players")
             setPlayers(users)
         })
+
     }, [props.socket])
 
     return <Grid container justify={"center"}>
@@ -32,21 +32,18 @@ const GamePage = (props: GamePageProps) => {
                             <Typography variant={"h6"}>Game</Typography>
                         </Grid>
                         <Grid item xs={12}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} md={3}>
-                                    Song
+                            <Grid container spacing={2} alignItems={"center"} justify={"center"}>
+                                <Grid item xs={12} md={4}>
+                                    <CardMusic socket={props.socket}/>
                                 </Grid>
-                                <Grid item xs={12} md={9}>
-                                    <TextField
-                                        label={"Titre et Artiste"}
-                                        fullWidth
-                                    />
+                                <Grid item xs={12} md={8}>
+                                    <TextField label={"Titre et Artiste"} fullWidth/>
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
-                                {players.map(player => <div key={player.id}>{player.username}</div>)}
+                                {players.map(player => <div key={player._id}>{player._username}</div>)}
                             </Grid>
                         </Grid>
 

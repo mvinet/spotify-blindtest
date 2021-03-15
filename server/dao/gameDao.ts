@@ -1,28 +1,34 @@
 import {Game} from "../classes/Game"
-import _ from "lodash";
+import {User} from "../classes/User"
+import _ from "lodash"
+import {SocketId} from "socket.io-adapter"
 
 const games: Game[] = []
 
-/**
- * Return all users in memory
- */
-export const getGames = () => {
-    return games
+export const createGame = (owner: User) => {
+    games.push(new Game("id", "", owner))
 }
 
 
 /**
- * Save a user in the list
- * @param game Game to save
+ * Add User in a game
+ * @param user User
  */
-export const save = (game: Game) => {
-    if (game) {
-        const existingGame = _.find(games, {id: game.id})
+export const addPlayerInGame = (user: User) => games[0].users.push(user)
 
-        if (existingGame) {
-            return
-        }
+/**
+ * Remove User in a game
+ * @param id SocketId
+ */
+export const removePlayerInGame = (id: SocketId) => getGame() && _.remove(games[0].users, {id: id})
 
-        games.push(game)
-    }
+/**
+ * Return the current game
+ */
+export const getGame = () => {
+    return games[0]
+}
+
+export const removeGame = () => {
+    games.pop()
 }
