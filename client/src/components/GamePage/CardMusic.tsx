@@ -33,12 +33,9 @@ const CardMusic = (props: CardMusicProps) => {
     const [time, setTime] = useState(0)
 
     useEffect(() => {
-        props.socket.on("game/music", () => {
-            console.log("game/music")
-            setTime(0)
-            setInterval(() => {
-                setTime(prev => prev + 1)
-            }, 1000)
+        props.socket.on("game/music/time", (i: number) => {
+            console.log(i)
+            setTime(i)
         })
     }, [props.socket])
 
