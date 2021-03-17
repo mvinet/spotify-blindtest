@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Fab from '@material-ui/core/Fab'
-import AlbumIcon from '@material-ui/icons/Album'
 import {Socket} from "socket.io-client"
+import {Grid, Slider} from "@material-ui/core"
+import {Album, VolumeDown, VolumeUp} from "@material-ui/icons"
 
 interface CardMusicProps {
     socket: Socket
@@ -13,15 +14,16 @@ interface CardMusicProps {
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
         },
         wrapper: {
             margin: theme.spacing(1),
-            position: 'relative',
+            position: "relative",
         },
         fabProgress: {
-            position: 'absolute',
+            position: "absolute",
             top: -6,
             left: -6,
             zIndex: 1,
@@ -32,8 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const CardMusic = (props: CardMusicProps) => {
     const classes = useStyles()
 
-    const [time, setTime] = useState(0)
     const [audio, setAudio] = useState<HTMLAudioElement>()
+    const [time, setTime] = useState<number>(0)
+    const [volume, setVolume] = useState<number>(100)
 
     useEffect(() => {
         props.socket.on("game/music/time", (i: number) => {
@@ -44,22 +47,46 @@ const CardMusic = (props: CardMusicProps) => {
     useEffect(() => {
         if (props.music) {
             const audio = new Audio(props.music)
-            audio.volume = 0.01
             audio.play().then(() => console.debug("Playing " + props.music))
+            setAudio(audio)
         }
     }, [props.music])
 
+    useEffect(() => {
+        if(audio) {
+            audio.volume = volume / 10000
+        }
+    }, [volume, audio])
+
+    const changeVolume = (event: any, newValue: number | number[]) => {
+        setVolume(newValue as number)
+    }
+
     const percentage = time >= 30 ? 100 : Math.floor((time / 30) * 100)
 
-    return <div className={classes.root}>
-        <div className={classes.wrapper}>
-            <Fab aria-label="audio" color="primary">
-                <AlbumIcon/>
-            </Fab>
-            <CircularProgress size={68} variant={"determinate"} className={classes.fabProgress} value={percentage}/>
-        </div>
-
-    </div>
+    return <Grid container>
+        <Grid item xs={12} className={classes.root}>
+            <div className={classes.wrapper}>
+                <Fab aria-label="audio" color="primary">
+                    <Album/>
+                </Fab>
+                <CircularProgress size={68} variant={"determinate"} className={classes.fabProgress} value={percentage}/>
+            </div>
+        </Grid>
+        <Grid item xs={12}>
+            <Grid container spacing={2}>
+                <Grid item>
+                    <VolumeDown/>
+                </Grid>
+                <Grid item xs>
+                    <Slider value={volume} onChange={changeVolume} aria-labelledby="continuous-slider"/>
+                </Grid>
+                <Grid item>
+                    <VolumeUp/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
 
 }
 
