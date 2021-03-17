@@ -11,12 +11,6 @@ export class Game {
      * Name of the user
      */
     private readonly _playlist: string
-
-    /**
-     * Current music playing
-     */
-    private readonly _currentMusic: string
-
     /**
      * User in game
      */
@@ -35,6 +29,19 @@ export class Game {
         this._users = []
     }
 
+    /**
+     * Current music playing
+     */
+    private _currentMusic: string
+
+    get currentMusic(): string {
+        return this._currentMusic
+    }
+
+    set currentMusic(value: string) {
+        this._currentMusic = value
+    }
+
     get id(): string {
         return this._id
     }
@@ -46,9 +53,4 @@ export class Game {
     get users(): User[] {
         return this._users
     }
-
-    get currentMusic(): string {
-        return this._currentMusic
-    }
-
 }

@@ -48,7 +48,7 @@ const GamePage = (props: GamePageProps) => {
                         </Grid>
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
-                                {players.map(player => <div key={player._id}>{player._username}</div>)}
+                                {players.map(player => <div key={player._id}>{player._username + " "}</div>)}
                             </Grid>
                         </Grid>
 

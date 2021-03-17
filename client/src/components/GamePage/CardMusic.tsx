@@ -45,15 +45,15 @@ const CardMusic = (props: CardMusicProps) => {
     }, [props.socket])
 
     useEffect(() => {
-        if (props.music) {
+        if (time === 1) {
             const audio = new Audio(props.music)
             audio.play().then(() => console.debug("Playing " + props.music))
             setAudio(audio)
         }
-    }, [props.music])
+    }, [props.music, time])
 
     useEffect(() => {
-        if(audio) {
+        if (audio) {
             audio.volume = volume / 10000
         }
     }, [volume, audio])
