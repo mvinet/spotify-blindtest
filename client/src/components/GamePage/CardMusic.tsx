@@ -7,6 +7,7 @@ import {Socket} from "socket.io-client"
 
 interface CardMusicProps {
     socket: Socket
+    music?: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,20 +31,29 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const CardMusic = (props: CardMusicProps) => {
     const classes = useStyles()
+
     const [time, setTime] = useState(0)
+    const [audio, setAudio] = useState<HTMLAudioElement>()
 
     useEffect(() => {
         props.socket.on("game/music/time", (i: number) => {
-            console.log(i)
             setTime(i)
         })
     }, [props.socket])
+
+    useEffect(() => {
+        if (props.music) {
+            const audio = new Audio(props.music)
+            audio.volume = 0.01
+            audio.play().then(() => console.debug("Playing " + props.music))
+        }
+    }, [props.music])
 
     const percentage = time >= 30 ? 100 : Math.floor((time / 30) * 100)
 
     return <div className={classes.root}>
         <div className={classes.wrapper}>
-            <Fab aria-label="save" color="primary">
+            <Fab aria-label="audio" color="primary">
                 <AlbumIcon/>
             </Fab>
             <CircularProgress size={68} variant={"determinate"} className={classes.fabProgress} value={percentage}/>

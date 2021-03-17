@@ -12,6 +12,7 @@ interface GamePageProps {
 
 const GamePage = (props: GamePageProps) => {
     const [players, setPlayers] = useState<Player[]>(props.game._users)
+    const [musicUrl, setMusicUrl] = useState<string>()
 
     useEffect(() => {
         props.socket.emit("game/players")
@@ -19,6 +20,10 @@ const GamePage = (props: GamePageProps) => {
         props.socket.on("game/players", (users: Player[]) => {
             console.log("Receiving game/players")
             setPlayers(users)
+        })
+
+        props.socket.on("game/music", (music: string) => {
+            setMusicUrl(music)
         })
 
     }, [props.socket])
@@ -34,7 +39,7 @@ const GamePage = (props: GamePageProps) => {
                         <Grid item xs={12}>
                             <Grid container spacing={2} alignItems={"center"} justify={"center"}>
                                 <Grid item xs={12} md={4}>
-                                    <CardMusic socket={props.socket}/>
+                                    <CardMusic socket={props.socket} music={musicUrl}/>
                                 </Grid>
                                 <Grid item xs={12} md={8}>
                                     <TextField label={"Titre et Artiste"} fullWidth/>

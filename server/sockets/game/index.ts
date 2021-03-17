@@ -21,12 +21,13 @@ export default (socket: Socket) => {
 
 const removePlayer = (socket: Socket) => {
     removePlayerInGame(socket.id)
-    socket.broadcast.emit(GAME_PLAYERS, getGame().users)
+    if (getGame()) {
+        socket.broadcast.emit(GAME_PLAYERS, getGame().users)
 
-    if (getGame().users.length === 0) {
-        removeGame()
+        if (getGame().users.length === 0) {
+            removeGame()
+        }
     }
-
 }
 
 const joinGame = (socket: Socket, gamePlayerJoin: GamePlayerJoin) => {

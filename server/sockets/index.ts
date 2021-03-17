@@ -6,11 +6,12 @@ import {getGame} from "../dao/gameDao"
 let io: Server
 
 const timer = (i: number) => {
-    console.log(i)
     setTimeout(() => {
-        io.to(getGame().id).emit("game/music/time", i++)
-        if (i <= 30) {
-            timer(i)
+        if (getGame()) {
+            io.to(getGame().id).emit("game/music/time", i++)
+            if (i <= 30) {
+                timer(i)
+            }
         }
     }, 1000)
 }
@@ -21,9 +22,7 @@ const initSocket = (app: httpServer) => {
     setInterval(() => {
         if (getGame()) {
             io.to(getGame().id).emit("game/music", getGame().currentMusic)
-
             timer(0)
-
         }
     }, 35 * 1000)
 
