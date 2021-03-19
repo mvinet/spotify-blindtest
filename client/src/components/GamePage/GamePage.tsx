@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from "react"
-import {Container, Grid, Paper, TextField, Typography} from "@material-ui/core"
+import React, {FormEvent, useEffect, useState} from "react"
+import {Chip, Container, Grid, Paper, TextField, Typography} from "@material-ui/core"
 import {Socket} from "socket.io-client"
 import Player from "../../model/Player"
 import Game from "../../model/Game"
-import CardMusic from "./CardMusic"
+import Music from "./Music"
+import {percent} from "csx"
 
 interface GamePageProps {
     socket: Socket,
@@ -13,6 +14,7 @@ interface GamePageProps {
 const GamePage = (props: GamePageProps) => {
     const [players, setPlayers] = useState<Player[]>(props.game._users)
     const [musicUrl, setMusicUrl] = useState<string>()
+    const [value, setValue] = useState<string>("")
 
     useEffect(() => {
         props.socket.emit("game/players")
@@ -28,8 +30,13 @@ const GamePage = (props: GamePageProps) => {
 
     }, [props.socket])
 
-    return <Grid container justify={"center"}>
-        <Grid item xs={12}>
+    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+        console.log(value)
+        event.preventDefault()
+    }
+
+    return <Grid container justify={"center"} spacing={2}>
+        <Grid item xs={12} md={9}>
             <Paper>
                 <Container>
                     <Grid container spacing={2}>
@@ -39,19 +46,35 @@ const GamePage = (props: GamePageProps) => {
                         <Grid item xs={12}>
                             <Grid container spacing={2} alignItems={"center"} justify={"center"}>
                                 <Grid item xs={12} md={4}>
-                                    <CardMusic socket={props.socket} music={musicUrl}/>
+                                    <Music socket={props.socket} music={musicUrl}/>
                                 </Grid>
-                                <Grid item xs={12} md={8}>
-                                    <TextField label={"Titre et Artiste"} fullWidth/>
+                                <Grid item xs={12} md={5}>
+                                    <form method={"GET"} onSubmit={onSubmit}>
+                                        <TextField
+                                            label={"Titre ou Artiste"}
+                                            fullWidth
+                                            value={value}
+                                            onChange={event => setValue(event.target.value)}
+                                        />
+                                    </form>
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Grid container spacing={2}>
-                                {players.map(player => <div key={player._id}>{player._username + " "}</div>)}
-                            </Grid>
-                        </Grid>
-
+                    </Grid>
+                </Container>
+            </Paper>
+            &nbsp;
+        </Grid>
+        <Grid item xs={12} md={3}>
+            <Paper>
+                <Container>
+                    <Grid container spacing={2}>
+                        {players.map(player => <Grid item xs={12} key={player._id}>
+                            <Chip
+                                label={player._username}
+                                style={{width: percent(100)}}
+                            />
+                        </Grid>)}
                     </Grid>
                 </Container>
             </Paper>

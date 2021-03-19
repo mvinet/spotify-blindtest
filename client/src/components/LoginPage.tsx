@@ -1,7 +1,7 @@
-import React, {ChangeEvent, useState} from "react";
-import {Button, Container, Grid, InputAdornment, Paper, TextField, Typography} from "@material-ui/core";
-import {Gamepad, Person} from "@material-ui/icons";
-import {Socket} from "socket.io-client";
+import React, {ChangeEvent, useState} from "react"
+import {Button, Container, Grid, InputAdornment, Paper, TextField, Typography} from "@material-ui/core"
+import {Gamepad, Person} from "@material-ui/icons"
+import {Socket} from "socket.io-client"
 
 interface LoginPageProps {
     socket: Socket
@@ -11,8 +11,12 @@ const LoginPage = (props: LoginPageProps) => {
 
     const [username, setUsername] = useState("")
     const [room, setRoom] = useState("")
+    const [error, setError] = useState(false)
 
     const handleChangeUsername = (event: ChangeEvent<HTMLInputElement>) => {
+        if(event.target.value.length > 0) {
+            setError(false)
+        }
         setUsername(event.target.value)
     }
 
@@ -21,7 +25,11 @@ const LoginPage = (props: LoginPageProps) => {
     }
 
     const handleLogin = () => {
-        props.socket.emit("game/join", {username, room})
+        if (username.length > 0) {
+            props.socket.emit("game/join", {username, room})
+        } else{
+            setError(true)
+        }
     }
 
     return <Grid container justify={"center"}>
@@ -43,6 +51,8 @@ const LoginPage = (props: LoginPageProps) => {
                                         <Person/>
                                     </InputAdornment>
                                 }}
+                                error={error}
+                                helperText={error && "Le nom d'utilisateur doit contenir plus de 0 charactère"}
                             />
                         </Grid>
                         <Grid item xs={12}>

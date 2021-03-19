@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const CardMusic = (props: CardMusicProps) => {
+const Music = (props: CardMusicProps) => {
     const classes = useStyles()
 
     const [audio, setAudio] = useState<HTMLAudioElement>()
@@ -70,7 +70,7 @@ const CardMusic = (props: CardMusicProps) => {
                 <Fab aria-label="audio" color="primary">
                     <Album/>
                 </Fab>
-                <CircularProgress size={68} variant={"determinate"} className={classes.fabProgress} value={percentage}/>
+                <CircularProgress size={68} variant={"determinate"} color={"secondary"} className={classes.fabProgress} value={percentage}/>
             </div>
         </Grid>
         <Grid item xs={12}>
@@ -90,4 +90,4 @@ const CardMusic = (props: CardMusicProps) => {
 
 }
 
-export default CardMusic
+export default Music
