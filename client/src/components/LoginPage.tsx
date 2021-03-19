@@ -2,6 +2,8 @@ import React, {ChangeEvent, useState} from "react"
 import {Button, Container, Grid, InputAdornment, Paper, TextField, Typography} from "@material-ui/core"
 import {Gamepad, Person} from "@material-ui/icons"
 import {Socket} from "socket.io-client"
+import useLocalStorage from "../hook/useLocalStorage"
+import {USERNAME} from "../constantes/localStorage"
 
 interface LoginPageProps {
     socket: Socket
@@ -9,12 +11,12 @@ interface LoginPageProps {
 
 const LoginPage = (props: LoginPageProps) => {
 
-    const [username, setUsername] = useState("")
+    const [username, setUsername] = useLocalStorage(USERNAME, "")
     const [room, setRoom] = useState("")
     const [error, setError] = useState(false)
 
     const handleChangeUsername = (event: ChangeEvent<HTMLInputElement>) => {
-        if(event.target.value.length > 0) {
+        if (event.target.value.length > 0) {
             setError(false)
         }
         setUsername(event.target.value)
@@ -27,7 +29,7 @@ const LoginPage = (props: LoginPageProps) => {
     const handleLogin = () => {
         if (username.length > 0) {
             props.socket.emit("game/join", {username, room})
-        } else{
+        } else {
             setError(true)
         }
     }

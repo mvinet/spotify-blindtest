@@ -5,6 +5,8 @@ import Fab from '@material-ui/core/Fab'
 import {Socket} from "socket.io-client"
 import {Grid, Slider} from "@material-ui/core"
 import {Album, VolumeDown, VolumeUp} from "@material-ui/icons"
+import useLocalStorage from "../../hook/useLocalStorage"
+import {VOLUME} from "../../constantes/localStorage"
 
 interface CardMusicProps {
     socket: Socket
@@ -36,7 +38,7 @@ const Music = (props: CardMusicProps) => {
 
     const [audio, setAudio] = useState<HTMLAudioElement>()
     const [time, setTime] = useState<number>(0)
-    const [volume, setVolume] = useState<number>(100)
+    const [volume, setVolume] = useLocalStorage(VOLUME, 100)
 
     useEffect(() => {
         props.socket.on("game/music/time", (i: number) => {

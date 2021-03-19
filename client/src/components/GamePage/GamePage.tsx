@@ -1,37 +1,53 @@
-import React, {FormEvent, useEffect, useState} from "react"
+import React, {FormEvent, useEffect, useRef, useState} from "react"
 import {Chip, Container, Grid, Paper, TextField, Typography} from "@material-ui/core"
 import {Socket} from "socket.io-client"
 import Player from "../../model/Player"
 import Game from "../../model/Game"
 import Music from "./Music"
 import {percent} from "csx"
+import {Face} from "@material-ui/icons"
 
 interface GamePageProps {
     socket: Socket,
     game: Game
 }
 
-const GamePage = (props: GamePageProps) => {
-    const [players, setPlayers] = useState<Player[]>(props.game._users)
+const GamePage = ({socket, game}: GamePageProps) => {
+
+    const input = useRef<HTMLInputElement>(null)
+
+    const [players, setPlayers] = useState<Player[]>(game._users)
     const [musicUrl, setMusicUrl] = useState<string>()
     const [value, setValue] = useState<string>("")
+    const [canEdit, setCanEdit] = useState<boolean>(false)
 
     useEffect(() => {
-        props.socket.emit("game/players")
+        socket.emit("game/players")
 
-        props.socket.on("game/players", (users: Player[]) => {
-            console.log("Receiving game/players")
+        socket.on("game/players", (users: Player[]) => {
             setPlayers(users)
         })
 
-        props.socket.on("game/music", (music: string) => {
+        socket.on("game/music", (music: string) => {
             setMusicUrl(music)
+            setValue("")
+            setCanEdit(true)
+            input.current!.focus()
         })
 
-    }, [props.socket])
+        socket.on("game/music/try", (result: { success: boolean }) => {
+            setCanEdit(!result.success)
+        })
+
+    }, [socket])
 
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-        console.log(value)
+
+        socket.emit("game/music/try", {
+            game: game._id,
+            try: value
+        })
+
         event.preventDefault()
     }
 
@@ -46,11 +62,13 @@ const GamePage = (props: GamePageProps) => {
                         <Grid item xs={12}>
                             <Grid container spacing={2} alignItems={"center"} justify={"center"}>
                                 <Grid item xs={12} md={4}>
-                                    <Music socket={props.socket} music={musicUrl}/>
+                                    <Music socket={socket} music={musicUrl}/>
                                 </Grid>
                                 <Grid item xs={12} md={5}>
                                     <form method={"GET"} onSubmit={onSubmit}>
                                         <TextField
+                                            inputRef={input}
+                                            disabled={!canEdit}
                                             label={"Titre ou Artiste"}
                                             fullWidth
                                             value={value}
@@ -69,12 +87,16 @@ const GamePage = (props: GamePageProps) => {
             <Paper>
                 <Container>
                     <Grid container spacing={2}>
-                        {players.map(player => <Grid item xs={12} key={player._id}>
-                            <Chip
-                                label={player._username}
-                                style={{width: percent(100)}}
-                            />
-                        </Grid>)}
+                        {players.map(player =>
+                            <Grid item xs={12} key={player._id}>
+                                <Chip
+                                    clickable
+                                    icon={<Face/>}
+                                    label={player._username}
+                                    style={{width: percent(100)}}
+                                    color={player._findMusic ? "primary" : "default"}
+                                />
+                            </Grid>)}
                     </Grid>
                 </Container>
             </Paper>
