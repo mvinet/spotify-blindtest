@@ -6,6 +6,7 @@ import Game from "../../model/Game"
 import Music from "./Music"
 import {percent} from "csx"
 import {Face} from "@material-ui/icons"
+import _ from "lodash"
 
 interface GamePageProps {
     socket: Socket,
@@ -25,7 +26,7 @@ const GamePage = ({socket, game}: GamePageProps) => {
         socket.emit("game/players")
 
         socket.on("game/players", (users: Player[]) => {
-            setPlayers(users)
+            setPlayers(_.orderBy(users, "_score", "desc"))
         })
 
         socket.on("game/music", (music: string) => {
