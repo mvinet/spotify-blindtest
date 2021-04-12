@@ -90,9 +90,8 @@ const GamePage = ({socket, game}: GamePageProps) => {
                         {players.map(player =>
                             <Grid item xs={12} key={player._id}>
                                 <Chip
-                                    clickable
                                     icon={<Face/>}
-                                    label={player._username}
+                                    label={player._score + " " + player._username}
                                     style={{width: percent(100)}}
                                     color={player._findMusic ? "primary" : "default"}
                                 />
