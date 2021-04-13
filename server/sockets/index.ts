@@ -2,7 +2,6 @@ import {Server as httpServer} from "http"
 import {Server, Socket} from "socket.io"
 import game, {GAME_PLAYERS} from "./game"
 import {getGame} from "../dao/gameDao"
-import {Spotify} from "../spotify"
 
 let io: Server
 
@@ -26,16 +25,8 @@ const initSocket = (app: httpServer) => {
 
             io.to(getGame().id).emit(GAME_PLAYERS, getGame().users)
 
-            new Spotify().getPlaylist(getGame().playlist).then(playlist => {
-                const random = Math.floor(Math.random() * 20)
-                getGame().currentMusic = Object.assign({
-                    author: playlist[random].track.artists[0].name,
-                    title: playlist[random].track.name,
-                    url: playlist[random].track.preview_url
-                })
-
-                io.to(getGame().id).emit("game/music", getGame().currentMusic.url)
-
+            getGame().findNewMusic().then(url => {
+                io.to(getGame().id).emit("game/music", url)
                 timer(0)
             })
         }

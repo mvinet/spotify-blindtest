@@ -1,5 +1,6 @@
 import {User} from "./User"
 import {CurrentMusic} from "./CurrentMusic"
+import {Spotify} from "../spotify"
 
 export class Game {
 
@@ -7,6 +8,8 @@ export class Game {
      * Socket Id of connected User
      */
     private readonly _id: string
+
+    private readonly _spotify: Spotify
 
     /**
      * Create a new Game with the following params
@@ -18,6 +21,8 @@ export class Game {
         this._id = id
         this._playlist = playlist
         this._users = []
+
+        this._spotify = new Spotify()
     }
 
     /**
@@ -62,4 +67,25 @@ export class Game {
     get id(): string {
         return this._id
     }
+
+    public findNewMusic() {
+
+        return this._spotify.getPlaylist(this.playlist).then(playlist => {
+            let random
+
+            do {
+                random = Math.floor(Math.random() * playlist.length)
+            } while (!playlist[random].track.preview_url)
+
+            this.currentMusic = Object.assign({
+                author: playlist[random].track.artists[0].name,
+                title: playlist[random].track.name,
+                url: playlist[random].track.preview_url
+            })
+
+            return this.currentMusic.url
+        })
+
+    }
+
 }
