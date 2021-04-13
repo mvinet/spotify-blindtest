@@ -27,10 +27,11 @@ const initSocket = (app: httpServer) => {
             io.to(getGame().id).emit(GAME_PLAYERS, getGame().users)
 
             new Spotify().getPlaylist(getGame().playlist).then(playlist => {
+                const random = Math.floor(Math.random() * 20)
                 getGame().currentMusic = Object.assign({
-                    author: playlist[0].track.artists[0].name,
-                    title: playlist[0].track.name,
-                    url: playlist[0].track.preview_url
+                    author: playlist[random].track.artists[0].name,
+                    title: playlist[random].track.name,
+                    url: playlist[random].track.preview_url
                 })
 
                 io.to(getGame().id).emit("game/music", getGame().currentMusic.url)
