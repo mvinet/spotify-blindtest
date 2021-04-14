@@ -3,10 +3,12 @@ import {Chip, Container, Grid, Paper, TextField, Typography} from "@material-ui/
 import {Socket} from "socket.io-client"
 import Player from "../../model/Player"
 import Game from "../../model/Game"
-import Music from "./Music"
+import MusicPlayer from "./MusicPlayer"
 import {percent} from "csx"
 import {Face} from "@material-ui/icons"
 import _ from "lodash"
+import Music from "../../model/Music"
+import MusicInfo from "./MusicInfo"
 
 interface GamePageProps {
     socket: Socket,
@@ -18,6 +20,7 @@ const GamePage = ({socket, game}: GamePageProps) => {
     const input = useRef<HTMLInputElement>(null)
 
     const [players, setPlayers] = useState<Player[]>(game._users)
+    const [oldTracks, setOldTracks] = useState<Music[]>([])
     const [musicUrl, setMusicUrl] = useState<string>()
     const [value, setValue] = useState<string>("")
     const [canEdit, setCanEdit] = useState<boolean>(false)
@@ -43,7 +46,14 @@ const GamePage = ({socket, game}: GamePageProps) => {
             setError(!result.success)
         })
 
+        socket.on("game/music/old", (music: Music) => {
+            if (music) {
+                setOldTracks(prevState => [music, ...prevState])
+            }
+        })
+
     }, [socket])
+
 
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 
@@ -57,36 +67,57 @@ const GamePage = ({socket, game}: GamePageProps) => {
 
     return <Grid container justify={"center"} spacing={2}>
         <Grid item xs={12} md={9}>
-            <Paper>
-                <Container>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography variant={"h6"}>Game</Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Grid container spacing={2} alignItems={"center"} justify={"center"}>
-                                <Grid item xs={12} md={4}>
-                                    <Music socket={socket} music={musicUrl}/>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Paper>
+                        <Container>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <Typography variant={"h6"}>Game</Typography>
                                 </Grid>
-                                <Grid item xs={12} md={5}>
-                                    <form method={"GET"} onSubmit={onSubmit}>
-                                        <TextField
-                                            inputRef={input}
-                                            disabled={!canEdit}
-                                            label={"Titre ou Artiste"}
-                                            fullWidth
-                                            value={value}
-                                            onChange={event => setValue(event.target.value)}
-                                            error={error}
-                                        />
-                                    </form>
+                                <Grid item xs={12}>
+                                    <Grid container spacing={2} alignItems={"center"} justify={"center"}>
+                                        <Grid item xs={12} md={4}>
+                                            <MusicPlayer socket={socket} music={musicUrl}/>
+                                        </Grid>
+                                        <Grid item xs={12} md={5}>
+                                            <form method={"GET"} onSubmit={onSubmit}>
+                                                <TextField
+                                                    inputRef={input}
+                                                    disabled={!canEdit}
+                                                    label={"Titre ou Artiste"}
+                                                    fullWidth
+                                                    value={value}
+                                                    onChange={event => setValue(event.target.value)}
+                                                    error={error}
+                                                    helperText={error ? "Mauvaise réponse" : ""}
+                                                />
+                                            </form>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </Grid>
-                </Container>
-            </Paper>
-            &nbsp;
+                        </Container>
+                    </Paper>
+                    &nbsp;
+                </Grid>
+                <Grid item xs={12}>
+                    <Paper>
+                        <Container>
+                            <Grid container spacing={1}>
+                                {oldTracks.length > 0 && oldTracks.map((item, i) =>
+                                    <Grid item xs={12} key={i}>
+                                        <MusicInfo music={item}/>
+                                    </Grid>
+                                )}
+                            </Grid>
+
+                        </Container>
+                    </Paper>
+                    &nbsp;
+                </Grid>
+            </Grid>
+
         </Grid>
         <Grid item xs={12} md={3}>
             <Paper>

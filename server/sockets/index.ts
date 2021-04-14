@@ -24,6 +24,7 @@ const initSocket = (app: httpServer) => {
             getGame().users = getGame().users.map(user => Object.assign(user, {_findMusic: false}))
 
             io.to(getGame().id).emit(GAME_PLAYERS, getGame().users)
+            io.to(getGame().id).emit("game/music/old", getGame().currentMusic)
 
             const newMusic = getGame().findNewMusic()
             io.to(getGame().id).emit("game/music", newMusic.url)

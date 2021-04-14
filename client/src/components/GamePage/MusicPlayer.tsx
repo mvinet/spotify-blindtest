@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const Music = (props: CardMusicProps) => {
+const MusicPlayer = (props: CardMusicProps) => {
     const classes = useStyles()
 
     const [audio, setAudio] = useState<HTMLAudioElement>()
@@ -92,4 +92,4 @@ const Music = (props: CardMusicProps) => {
 
 }
 
-export default Music
+export default MusicPlayer

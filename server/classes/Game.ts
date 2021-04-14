@@ -86,7 +86,6 @@ export class Game {
 
                     let name = item.track.name
 
-                    //Supression des accents
                     name.normalize("NFD")
                         .replace(/[\u0300-\u036f]/g, "")
 
@@ -96,7 +95,9 @@ export class Game {
                     this._tracks.push(Object.assign({
                         author: item.track.artists[0].name,
                         title: name,
-                        url: item.track.preview_url
+                        url: item.track.preview_url,
+                        link: item.track.external_urls.spotify,
+                        cover: item.track.album.images[0].url
                     }))
                 }
             })
