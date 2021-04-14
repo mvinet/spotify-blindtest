@@ -82,9 +82,20 @@ export class Game {
 
             playlist.items.forEach((item: any) => {
                 if (item.track.preview_url) {
+
+
+                    let name = item.track.name
+
+                    //Supression des accents
+                    name.normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "")
+
+                    name = name.split("(")[0]
+                    name = name.split("-")[0]
+
                     this._tracks.push(Object.assign({
                         author: item.track.artists[0].name,
-                        title: item.track.name,
+                        title: name,
                         url: item.track.preview_url
                     }))
                 }
