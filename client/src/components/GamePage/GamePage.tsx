@@ -21,6 +21,7 @@ const GamePage = ({socket, game}: GamePageProps) => {
     const [musicUrl, setMusicUrl] = useState<string>()
     const [value, setValue] = useState<string>("")
     const [canEdit, setCanEdit] = useState<boolean>(false)
+    const [error, setError] = useState<boolean>(false)
 
     useEffect(() => {
         socket.emit("game/players")
@@ -33,11 +34,13 @@ const GamePage = ({socket, game}: GamePageProps) => {
             setMusicUrl(music)
             setValue("")
             setCanEdit(true)
+            setError(false)
             input.current!.focus()
         })
 
         socket.on("game/music/try", (result: { success: boolean }) => {
             setCanEdit(!result.success)
+            setError(!result.success)
         })
 
     }, [socket])
@@ -74,6 +77,7 @@ const GamePage = ({socket, game}: GamePageProps) => {
                                             fullWidth
                                             value={value}
                                             onChange={event => setValue(event.target.value)}
+                                            error={error}
                                         />
                                     </form>
                                 </Grid>
