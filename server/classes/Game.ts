@@ -1,5 +1,5 @@
 import {User} from "./User"
-import {CurrentMusic} from "./CurrentMusic"
+import {Music} from "./Music"
 import {Spotify} from "../spotify"
 
 export class Game {
@@ -11,6 +11,8 @@ export class Game {
 
     private readonly _spotify: Spotify
 
+    private _tracks: Music[]
+
     /**
      * Create a new Game with the following params
      * @param id The socket ID
@@ -21,8 +23,12 @@ export class Game {
         this._id = id
         this._playlist = playlist
         this._users = []
+        this._tracks = []
 
         this._spotify = new Spotify()
+
+        this.fetchMusic()
+
     }
 
     /**
@@ -54,14 +60,10 @@ export class Game {
     /**
      * Current music playing
      */
-    private _currentMusic?: CurrentMusic
+    private _currentMusic?: Music
 
-    get currentMusic(): CurrentMusic {
+    get currentMusic(): Music {
         return this._currentMusic!
-    }
-
-    set currentMusic(value: CurrentMusic) {
-        this._currentMusic = value
     }
 
     get id(): string {
@@ -69,23 +71,26 @@ export class Game {
     }
 
     public findNewMusic() {
+        const random = Math.floor(Math.random() * this._tracks.length)
+        this._currentMusic = this._tracks[random]
 
-        return this._spotify.getPlaylist(this.playlist).then(playlist => {
-            let random
+        return this._tracks.splice(random, 1)[0]
+    }
 
-            do {
-                random = Math.floor(Math.random() * playlist.length)
-            } while (!playlist[random].track.preview_url)
+    private fetchMusic = () => {
+        this._spotify.getPlaylist(this.playlist).then(playlist => {
 
-            this.currentMusic = Object.assign({
-                author: playlist[random].track.artists[0].name,
-                title: playlist[random].track.name,
-                url: playlist[random].track.preview_url
+            playlist.items.forEach((item: any) => {
+                if (item.track.preview_url) {
+                    this._tracks.push(Object.assign({
+                        author: item.track.artists[0].name,
+                        title: item.track.name,
+                        url: item.track.preview_url
+                    }))
+                }
             })
 
-            return this.currentMusic.url
         })
-
     }
 
 }

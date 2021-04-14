@@ -1,7 +1,8 @@
 import axios from "axios"
 
 const token = () => "https://accounts.spotify.com/api/token"
-const playlist = (id: string) => "https://api.spotify.com/v1/playlists/" + id + "?fields=tracks(items(track(artists(name)%2C%20name%2C%20preview_url)))"
+const playlist = (id: string) => "https://api.spotify.com/v1/playlists/" + id + "/tracks"
+
 
 export class Spotify {
 
@@ -22,8 +23,7 @@ export class Spotify {
         return Spotify.getToken().then(token => {
             return axios.get(playlist(id), {
                 headers: {"Authorization": "Bearer " + token}
-            }).then(result => result.data.tracks.items)
+            }).then(result => result.data)
         })
     }
-
 }

@@ -6,7 +6,7 @@ import {SocketId} from "socket.io-adapter"
 const games: Game[] = []
 
 export const createGame = (owner: User) => {
-    games.push(new Game("id", "37i9dQZF1DWWl7MndYYxge", owner))
+    games.push(new Game("id", "1SAnIDZdIqDClfoq0018Ff", owner))
 }
 
 

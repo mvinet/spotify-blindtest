@@ -1,5 +1,5 @@
 
-export class CurrentMusic {
+export class Music {
 
     private readonly _url: string
 

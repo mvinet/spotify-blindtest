@@ -25,10 +25,10 @@ const initSocket = (app: httpServer) => {
 
             io.to(getGame().id).emit(GAME_PLAYERS, getGame().users)
 
-            getGame().findNewMusic().then(url => {
-                io.to(getGame().id).emit("game/music", url)
-                timer(0)
-            })
+            const newMusic = getGame().findNewMusic()
+            io.to(getGame().id).emit("game/music", newMusic.url)
+            timer(0)
+
         }
     }, 35 * 1000)
 
