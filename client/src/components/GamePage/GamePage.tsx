@@ -105,11 +105,17 @@ const GamePage = ({socket, game}: GamePageProps) => {
                     <Paper>
                         <Container>
                             <Grid container spacing={1}>
-                                {oldTracks.length > 0 && oldTracks.map((item, i) =>
-                                    <Grid item xs={12} key={i}>
-                                        <MusicInfo music={item}/>
+                                {oldTracks.length > 0 && <>
+                                    <Grid item xs={12}>
+                                        <Typography variant={"h4"} component={"h4"}>Dernières musiques</Typography>
                                     </Grid>
-                                )}
+
+                                    {oldTracks.map((item, i) =>
+                                        <Grid item xs={12} key={i}>
+                                            <MusicInfo music={item}/>
+                                        </Grid>
+                                    )}
+                                </>}
                             </Grid>
 
                         </Container>
