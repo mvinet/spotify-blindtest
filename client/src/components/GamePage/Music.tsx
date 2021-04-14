@@ -56,7 +56,7 @@ const Music = (props: CardMusicProps) => {
 
     useEffect(() => {
         if (audio) {
-            audio.volume = volume / 10000
+            audio.volume = volume / 1000
         }
     }, [volume, audio])
 
