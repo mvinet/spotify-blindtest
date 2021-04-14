@@ -94,7 +94,7 @@ export class Game {
 
                     this._tracks.push(Object.assign({
                         author: item.track.artists[0].name,
-                        title: name,
+                        title: name.trim(),
                         url: item.track.preview_url,
                         link: item.track.external_urls.spotify,
                         cover: item.track.album.images[0].url
