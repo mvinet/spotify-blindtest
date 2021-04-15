@@ -10,7 +10,7 @@ interface Props {
 const MusicInfo = ({music}: Props) => {
 
     return <Grid container spacing={2}>
-        <Grid item xs={1}>
+        <Grid item xs={3} sm={2} md={1}>
             <Link target="_blank" rel="noopener" href={music.link} color={"inherit"} underline={"none"}>
                 <img src={music.cover} alt={"cover"} width={"100%"}/>
             </Link>

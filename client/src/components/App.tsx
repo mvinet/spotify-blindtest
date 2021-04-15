@@ -9,6 +9,7 @@ import LoginPage from "./LoginPage"
 import {Socket} from "socket.io-client"
 import GamePage from "./GamePage/GamePage"
 import Game from "../model/Game"
+import {em} from "csx"
 
 interface AppProps {
     socket: Socket
@@ -32,11 +33,11 @@ const App = (props: AppProps) => {
 
     return <ThemeProvider theme={theme}>
         <CssBaseline/>
-        <Grid container spacing={4} style={{overflowX: "hidden"}}>
+        <Grid container direction={"column"}>
             <Grid item xs={12}>
                 <Header darkMode={darkMode} setDarkMode={setDarkMode}/>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{marginTop: em(3)}}>
                 <Container>
                     {
                         !gameConnected ?

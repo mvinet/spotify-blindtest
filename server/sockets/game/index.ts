@@ -33,7 +33,7 @@ const findMusic = (socket: Socket) => {
         const musicTry = gameMusicTry.try.toLowerCase()
 
         let find = false
-        if (musicTry.search(title.toLowerCase()) !== -1 || musicTry.search(author.toLowerCase()) !== -1) {
+        if (musicTry.trim() === title.toLowerCase() || musicTry.trim() === author.toLowerCase()) {
             find = true
         }
 

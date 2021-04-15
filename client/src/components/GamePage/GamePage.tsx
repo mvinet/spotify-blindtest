@@ -65,39 +65,55 @@ const GamePage = ({socket, game}: GamePageProps) => {
         event.preventDefault()
     }
 
-    return <Grid container justify={"center"} spacing={2}>
+    return <Grid container spacing={2}>
+        <Grid item xs={12} md={3}>
+            <Paper>
+                <Container>
+                    <Grid container spacing={2}>
+                        {players.map(player =>
+                            <Grid item xs={12} key={player._id}>
+                                <Chip
+                                    icon={<Face/>}
+                                    label={player._score + " " + player._username}
+                                    style={{width: percent(100)}}
+                                    color={player._findMusic ? "primary" : "default"}
+                                />
+                            </Grid>)}
+                    </Grid>
+                </Container>
+            </Paper>
+            &nbsp;
+        </Grid>
         <Grid item xs={12} md={9}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Paper>
-                        <Container>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <Typography variant={"h6"}>Game</Typography>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Grid container spacing={2} alignItems={"center"} justify={"center"}>
-                                        <Grid item xs={12} md={4}>
-                                            <MusicPlayer socket={socket} music={musicUrl}/>
-                                        </Grid>
-                                        <Grid item xs={12} md={5}>
-                                            <form method={"GET"} onSubmit={onSubmit}>
-                                                <TextField
-                                                    inputRef={input}
-                                                    disabled={!canEdit}
-                                                    label={"Titre ou Artiste"}
-                                                    fullWidth
-                                                    value={value}
-                                                    onChange={event => setValue(event.target.value)}
-                                                    error={error}
-                                                    helperText={error ? "Mauvaise réponse" : ""}
-                                                />
-                                            </form>
-                                        </Grid>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2} style={{textAlign: "center"}}>
+                                <Typography variant={"h6"}>Game</Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2} alignItems={"center"} justify={"center"}>
+                                    <Grid item xs={12} md={4}>
+                                        <MusicPlayer socket={socket} music={musicUrl}/>
+                                    </Grid>
+                                    <Grid item xs={12} md={5}>
+                                        <form method={"GET"} onSubmit={onSubmit}>
+                                            <TextField
+                                                inputRef={input}
+                                                disabled={!canEdit}
+                                                label={"Titre ou Artiste"}
+                                                fullWidth
+                                                value={value}
+                                                onChange={event => setValue(event.target.value)}
+                                                error={error}
+                                                helperText={error ? "Mauvaise réponse" : ""}
+                                            />
+                                        </form>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        </Container>
+                        </Grid>
                     </Paper>
                     &nbsp;
                 </Grid>
@@ -117,31 +133,11 @@ const GamePage = ({socket, game}: GamePageProps) => {
                                     )}
                                 </>}
                             </Grid>
-
                         </Container>
                     </Paper>
                     &nbsp;
                 </Grid>
             </Grid>
-
-        </Grid>
-        <Grid item xs={12} md={3}>
-            <Paper>
-                <Container>
-                    <Grid container spacing={2}>
-                        {players.map(player =>
-                            <Grid item xs={12} key={player._id}>
-                                <Chip
-                                    icon={<Face/>}
-                                    label={player._score + " " + player._username}
-                                    style={{width: percent(100)}}
-                                    color={player._findMusic ? "primary" : "default"}
-                                />
-                            </Grid>)}
-                    </Grid>
-                </Container>
-            </Paper>
-            &nbsp;
         </Grid>
     </Grid>
 }
