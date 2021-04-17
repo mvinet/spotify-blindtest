@@ -1,14 +1,27 @@
 import React, {FormEvent, useEffect, useRef, useState} from "react"
-import {Chip, Container, Grid, Paper, TextField, Typography} from "@material-ui/core"
+import {
+    Button,
+    Container,
+    Grid,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Paper,
+    TextField,
+    Typography
+} from "@material-ui/core"
 import {Socket} from "socket.io-client"
 import Player from "../../model/Player"
 import Game from "../../model/Game"
 import MusicPlayer from "./MusicPlayer"
-import {percent} from "csx"
 import {Face} from "@material-ui/icons"
 import _ from "lodash"
 import Music from "../../model/Music"
 import MusicInfo from "./MusicInfo"
+import {percent} from "csx"
+
+import {useParams} from "react-router-dom"
 
 interface GamePageProps {
     socket: Socket,
@@ -17,9 +30,11 @@ interface GamePageProps {
 
 const GamePage = ({socket, game}: GamePageProps) => {
 
+    const {id} = useParams<{ id: string }>()
+
     const input = useRef<HTMLInputElement>(null)
 
-    const [players, setPlayers] = useState<Player[]>(game._users)
+    const [players, setPlayers] = useState<Player[]>(game.users)
     const [oldTracks, setOldTracks] = useState<Music[]>([])
     const [musicUrl, setMusicUrl] = useState<string>()
     const [value, setValue] = useState<string>("")
@@ -27,7 +42,7 @@ const GamePage = ({socket, game}: GamePageProps) => {
     const [error, setError] = useState<boolean>(false)
 
     useEffect(() => {
-        socket.emit("game/players")
+        socket.emit("game/connected", {roomId: id})
 
         socket.on("game/players", (users: Player[]) => {
             setPlayers(_.orderBy(users, "_score", "desc"))
@@ -52,33 +67,51 @@ const GamePage = ({socket, game}: GamePageProps) => {
             }
         })
 
-    }, [socket])
+    }, [socket, id])
 
 
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 
         socket.emit("game/music/try", {
-            game: game._id,
+            game: game.id,
             try: value
         })
 
         event.preventDefault()
     }
 
+    const handleStartGame = () => {
+        socket.emit("game/start", {
+            roomId: game.id
+        })
+    }
+
     return <Grid container spacing={2}>
+        {socket.id === game.owner &&
+        <Grid item xs={12}>
+            <Paper>
+                <Button fullWidth onClick={handleStartGame}>
+                    Start
+                </Button>
+            </Paper>
+        </Grid>
+        }
         <Grid item xs={12} md={3}>
             <Paper>
                 <Container>
                     <Grid container spacing={2}>
-                        {players.map(player =>
-                            <Grid item xs={12} key={player._id}>
-                                <Chip
-                                    icon={<Face/>}
-                                    label={player._score + " " + player._username}
-                                    style={{width: percent(100)}}
-                                    color={player._findMusic ? "primary" : "default"}
-                                />
-                            </Grid>)}
+                        <List style={{width: percent(100)}}>
+                            {players.map(player =>
+                                <div key={player._id}>
+                                    <ListItem button>
+                                        <ListItemIcon>
+                                            <Face/>
+                                        </ListItemIcon>
+                                        <ListItemText primary={player._username}/>
+                                    </ListItem>
+                                </div>
+                            )}
+                        </List>
                     </Grid>
                 </Container>
             </Paper>

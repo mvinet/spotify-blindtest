@@ -1,8 +1,9 @@
 import Player from "./Player"
 
 interface Game {
-    _id: string
-    _users: Player[]
+    id: string
+    users: Player[]
+    owner: string
 }
 
 export default Game

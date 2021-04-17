@@ -4,16 +4,21 @@ import {Gamepad, Person} from "@material-ui/icons"
 import {Socket} from "socket.io-client"
 import useLocalStorage from "../hook/useLocalStorage"
 import {USERNAME} from "../constantes/localStorage"
+import CreateRoom from "./CreateRoom"
+
+import {useLocation} from "react-router-dom"
 
 interface LoginPageProps {
     socket: Socket
 }
 
 const LoginPage = (props: LoginPageProps) => {
+    const location = useLocation()
 
     const [username, setUsername] = useLocalStorage(USERNAME, "")
-    const [room, setRoom] = useState("")
+    const [room, setRoom] = useState(location.pathname.replace("/", ""))
     const [error, setError] = useState(false)
+    const [createRoom, setCreateRoom] = useState(false)
 
     const handleChangeUsername = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.value.length > 0) {
@@ -28,13 +33,33 @@ const LoginPage = (props: LoginPageProps) => {
 
     const handleLogin = () => {
         if (username.length > 0) {
-            props.socket.emit("game/join", {username, room})
+            props.socket.emit("game/join", {username, roomId: room})
         } else {
             setError(true)
         }
     }
 
+    const handleCreateRoom = (roomId: string) => {
+        if (username.length > 0) {
+            props.socket.emit("game/join", {username, roomId})
+        } else {
+            setError(true)
+        }
+    }
+
+    const handleOpenModal = (open: boolean) => {
+        setCreateRoom(open)
+    }
+
+
     return <Grid container justify={"center"}>
+        <CreateRoom
+            socket={props.socket}
+            username={username}
+            open={createRoom}
+            onClose={() => handleOpenModal(false)}
+            setConnected={handleCreateRoom}
+        />
         <Grid item xs={12} md={6}>
             <Paper>
                 <Container>
@@ -62,7 +87,6 @@ const LoginPage = (props: LoginPageProps) => {
                                 label={"Room"}
                                 fullWidth
                                 value={room}
-                                disabled
                                 onChange={handleChangeRoom}
                                 InputProps={{
                                     startAdornment: <InputAdornment position={"start"}>
@@ -81,11 +105,17 @@ const LoginPage = (props: LoginPageProps) => {
                                 Connection
                             </Button>
                         </Grid>
+                        <Grid item xs={12} style={{textAlign: "center"}}>
+                            <Button fullWidth onClick={() => handleOpenModal(true)}>
+                                Créer une partie
+                            </Button>
+                        </Grid>
                     </Grid>
                 </Container>
             </Paper>
             &nbsp;
         </Grid>
+
     </Grid>
 }
 

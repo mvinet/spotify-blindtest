@@ -11,11 +11,15 @@ import GamePage from "./GamePage/GamePage"
 import Game from "../model/Game"
 import {em} from "csx"
 
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom"
+
 interface AppProps {
     socket: Socket
 }
 
 const App = (props: AppProps) => {
+
+
     const [darkMode, setDarkMode] = useLocalStorage(DARK_MODE, true)
     const [gameConnected, setConnectedGame] = useState<Game>()
 
@@ -39,12 +43,19 @@ const App = (props: AppProps) => {
             </Grid>
             <Grid item xs={12} style={{marginTop: em(3)}}>
                 <Container>
-                    {
-                        !gameConnected ?
-                            <LoginPage socket={props.socket}/>
-                            :
-                            <GamePage socket={props.socket} game={gameConnected}/>
-                    }
+                    <Router>
+                        <Switch>
+                            <Route path={"/"} exact={false}>
+                                {
+                                    !gameConnected ?
+                                        <LoginPage socket={props.socket}/>
+                                        :
+                                        <GamePage socket={props.socket} game={gameConnected}/>
+                                }
+                            </Route>
+                        </Switch>
+                    </Router>
+
                 </Container>
             </Grid>
         </Grid>
