@@ -1,6 +1,5 @@
 import React, {FormEvent, useEffect, useRef, useState} from "react"
 import {
-    Button,
     Container,
     Grid,
     List,
@@ -22,6 +21,7 @@ import MusicInfo from "./MusicInfo"
 import {percent} from "csx"
 
 import {useParams} from "react-router-dom"
+import GameInfo from "./GameInfo"
 
 interface GamePageProps {
     socket: Socket,
@@ -80,22 +80,10 @@ const GamePage = ({socket, game}: GamePageProps) => {
         event.preventDefault()
     }
 
-    const handleStartGame = () => {
-        socket.emit("game/start", {
-            roomId: game.id
-        })
-    }
-
     return <Grid container spacing={2}>
-        {socket.id === game.owner &&
         <Grid item xs={12}>
-            <Paper>
-                <Button fullWidth onClick={handleStartGame}>
-                    Start
-                </Button>
-            </Paper>
+            <GameInfo socket={socket} game={game}/>
         </Grid>
-        }
         <Grid item xs={12} md={3}>
             <Paper>
                 <Container>
