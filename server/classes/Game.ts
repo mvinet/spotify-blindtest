@@ -4,26 +4,25 @@ import {Spotify} from "../spotify"
 
 export class Game {
 
-    /**
-     * Socket Id of connected User
-     */
     private readonly _id: string
-
     private readonly _spotify: Spotify
-
-    private _tracks: Music[]
+    private readonly _owner: string
+    private readonly _tracks: Music[]
+    private readonly _playlist: string
 
     /**
      * Create a new Game with the following params
      * @param id The socket ID
      * @param playlist the uri of the playlist
-     * @param owner User the creator of the game
+     * @param owner Owner of the game
      */
-    public constructor(id: string, playlist: string, owner: User) {
+    public constructor(id: string, playlist: string, owner: string) {
         this._id = id
         this._playlist = playlist
         this._users = []
         this._tracks = []
+        this._owner = owner
+        this._totalTrack = 0
 
         this._spotify = new Spotify()
 
@@ -31,17 +30,19 @@ export class Game {
 
     }
 
-    /**
-     * Name of the playlist
-     */
-    private _playlist: string
+    private _totalTrack: number
+
+    get totalTrack(): number {
+        return this._totalTrack
+    }
+
+
+    get tracks(): Music[] {
+        return this._tracks
+    }
 
     get playlist(): string {
         return this._playlist
-    }
-
-    set playlist(value: string) {
-        this._playlist = value
     }
 
     /**
@@ -68,6 +69,10 @@ export class Game {
 
     get id(): string {
         return this._id
+    }
+
+    get owner(): string {
+        return this._owner
     }
 
     public findNewMusic() {
@@ -102,6 +107,7 @@ export class Game {
                 }
             })
 
+            this._totalTrack = this._tracks.length
         })
     }
 

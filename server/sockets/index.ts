@@ -1,40 +1,17 @@
 import {Server as httpServer} from "http"
 import {Server, Socket} from "socket.io"
-import game, {GAME_PLAYERS} from "./game"
-import {getGame} from "../dao/gameDao"
+import game from "./game"
+import {Express} from "express"
 
 let io: Server
 
-const timer = (i: number) => {
-    setTimeout(() => {
-        if (getGame()) {
-            io.to(getGame().id).emit("game/music/time", i++)
-            if (i <= 30) {
-                timer(i)
-            }
-        }
-    }, 1000)
-}
+const initSocket = (server: httpServer, app: Express) => {
+    io = new Server(server)
 
-const initSocket = (app: httpServer) => {
-    io = new Server(app)
-
-    setInterval(() => {
-        if (getGame()) {
-            getGame().users = getGame().users.map(user => Object.assign(user, {_findMusic: false}))
-
-            io.to(getGame().id).emit(GAME_PLAYERS, getGame().users)
-            io.to(getGame().id).emit("game/music/old", getGame().currentMusic)
-
-            const newMusic = getGame().findNewMusic()
-            io.to(getGame().id).emit("game/music", newMusic.url)
-            timer(0)
-
-        }
-    }, 35 * 1000)
+    app.request.io = io
 
     io.on("connection", (socket: Socket) => {
-        game(socket)
+        game(socket, io)
     })
 
 }
