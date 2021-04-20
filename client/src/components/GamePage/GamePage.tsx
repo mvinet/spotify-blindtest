@@ -95,7 +95,8 @@ const GamePage = ({socket, game}: GamePageProps) => {
                                         <ListItemIcon>
                                             <Face/>
                                         </ListItemIcon>
-                                        <ListItemText primary={player._username}/>
+                                        <ListItemText secondary={player._username}/>
+                                        <ListItemText primary={player._score}/>
                                     </ListItem>
                                 </div>
                             )}
