@@ -9,10 +9,6 @@ router.get("/ping", (req, res) => {
     })
 })
 
-router.get("/games", (req, res) => {
-    res.json(getGames())
-})
-
 router.get("/game/:id", (req, res) => {
     const game = getGame(req.params.id)
 
