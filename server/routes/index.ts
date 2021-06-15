@@ -1,5 +1,6 @@
 import {Router} from "express"
-import {createGame, getGame, getGames} from "../dao/gameDao"
+import {createGame, getGame} from "../dao/gameDao"
+import {Spotify} from "../spotify"
 
 const router = Router()
 
@@ -7,6 +8,29 @@ router.get("/ping", (req, res) => {
     res.json({
         "pong": new Date()
     })
+})
+
+router.get("/check", (req, res) => {
+    if (req.query.playlist) {
+        const playlistUrl: string = req.query.playlist as string
+        const playlistId = playlistUrl.split("/playlist/")[1].split("?si=")[0]
+
+        const spotify = new Spotify()
+
+        console.log(playlistId)
+
+        spotify.getPlaylist(playlistId).then(result => {
+            res.status(200).json({
+                available: result.items.filter((item: any) => item.track.preview_url !== null),
+                notAvailable: result.items.filter((item: any) => item.track.preview_url == null)
+            })
+        }).catch(() => {
+            res.status(404).json()
+        })
+
+    } else {
+        res.status(200).json()
+    }
 })
 
 router.get("/game/:id", (req, res) => {
