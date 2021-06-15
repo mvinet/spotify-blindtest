@@ -11,10 +11,16 @@ interface Props {
     setConnected: (roomId: string) => void
 }
 
+interface Check {
+    available: any[]
+    notAvailable: any[]
+}
+
 const CreateRoom = ({socket, username, open, onClose, setConnected}: Props) => {
 
     const [url, setUrl] = useState("")
     const [error, setError] = useState(false)
+    const [check, setCheck] = useState<Check>()
 
     const handleChangeUrl = (event: ChangeEvent<HTMLInputElement>) => {
         setUrl(event.target.value)
@@ -32,6 +38,14 @@ const CreateRoom = ({socket, username, open, onClose, setConnected}: Props) => {
         })
     }
 
+    const handleCheckMusic = () => {
+        if (url) {
+            axios.get(`/check?playlist=${url}`).then(res => {
+                setCheck(res.data)
+            })
+        }
+    }
+
     return <Dialog open={open} onClose={onClose} fullWidth>
         <DialogTitle>Création d'une room</DialogTitle>
         <DialogContent>
@@ -46,8 +60,14 @@ const CreateRoom = ({socket, username, open, onClose, setConnected}: Props) => {
                 helperText={error && "Mauvaise URL"}
             />
         </DialogContent>
+        <DialogContent hidden={!check}>
+            {check && check.notAvailable.map(item => <div key={item.track.id}>
+                {item.track.name} by {item.track.artists[0].name}
+            </div>)}
+        </DialogContent>
         <DialogActions>
             <Button onClick={onClose}>Annuler</Button>
+            <Button onClick={handleCheckMusic} disabled={!url}>Vérifier les musiques</Button>
             <Button onClick={handleCreateRoom}>Valider</Button>
         </DialogActions>
     </Dialog>

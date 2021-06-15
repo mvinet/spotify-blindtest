@@ -6,6 +6,9 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 const useStyles = makeStyles(() => ({
     title: {
         flexGrow: 1
+    },
+    icon: {
+        color: "white"
     }
 }))
 
@@ -24,7 +27,7 @@ const Header = (props: HeaderProps) => {
             </Typography>
 
             <IconButton onClick={() => props.setDarkMode(!props.darkMode)}>
-                {props.darkMode ? <WbSunny/> : <NightsStay/>}
+                {props.darkMode ? <WbSunny className={classes.icon}/> : <NightsStay className={classes.icon}/>}
             </IconButton>
         </Toolbar>
     </AppBar>
