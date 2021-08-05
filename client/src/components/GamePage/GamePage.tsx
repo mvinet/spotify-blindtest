@@ -1,20 +1,9 @@
 import React, {FormEvent, useEffect, useRef, useState} from "react"
-import {
-    Container,
-    Grid,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Paper,
-    TextField,
-    Typography
-} from "@material-ui/core"
+import {Container, Grid, List, Paper, TextField, Typography} from "@material-ui/core"
 import {Socket} from "socket.io-client"
 import Player from "../../model/Player"
 import Game from "../../model/Game"
 import MusicPlayer from "./MusicPlayer"
-import {Face} from "@material-ui/icons"
 import _ from "lodash"
 import Music from "../../model/Music"
 import MusicInfo from "./MusicInfo"
@@ -22,6 +11,7 @@ import {percent} from "csx"
 
 import {useParams} from "react-router-dom"
 import GameInfo from "./GameInfo"
+import PlayerItem from "./PlayerItem"
 
 interface GamePageProps {
     socket: Socket,
@@ -89,17 +79,7 @@ const GamePage = ({socket, game}: GamePageProps) => {
                 <Container>
                     <Grid container spacing={2}>
                         <List style={{width: percent(100)}}>
-                            {players.map(player =>
-                                <div key={player._id}>
-                                    <ListItem button>
-                                        <ListItemIcon>
-                                            <Face/>
-                                        </ListItemIcon>
-                                        <ListItemText secondary={player._username}/>
-                                        <ListItemText primary={player._score}/>
-                                    </ListItem>
-                                </div>
-                            )}
+                            {players.map(player => <PlayerItem key={player._id} player={player}/>)}
                         </List>
                     </Grid>
                 </Container>
