@@ -85,9 +85,8 @@ export class Game {
     private fetchMusic = () => {
         this._spotify.getPlaylist(this.playlist).then(playlist => {
 
-            playlist.items.forEach((item: any) => {
+            playlist.forEach((item: any) => {
                 if (item.track.preview_url) {
-
 
                     let name = item.track.name
 

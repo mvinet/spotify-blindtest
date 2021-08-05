@@ -19,8 +19,8 @@ router.get("/check", (req, res) => {
 
         spotify.getPlaylist(playlistId).then(result => {
             res.status(200).json({
-                available: result.items.filter((item: any) => item.track.preview_url !== null),
-                notAvailable: result.items.filter((item: any) => item.track.preview_url == null)
+                available: result.filter((item: any) => item.track.preview_url !== null),
+                notAvailable: result.filter((item: any) => item.track.preview_url == null)
             })
         }).catch(() => {
             res.status(404).json()

@@ -49,6 +49,7 @@ const start = (socket: Socket, io: Server) => ({roomId}: { roomId: string }) => 
             io.to(game.id).emit("game/music/old", game.currentMusic)
 
             const newMusic = game.findNewMusic()
+
             io.to(game.id).emit("game/music", newMusic.url)
             io.to(game.id).emit("game/music/number", {
                 total: game.totalTrack,
