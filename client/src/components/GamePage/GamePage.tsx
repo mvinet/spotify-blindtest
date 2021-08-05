@@ -84,10 +84,9 @@ const GamePage = ({socket, game}: GamePageProps) => {
                     </Grid>
                 </Container>
             </Paper>
-            &nbsp;
         </Grid>
         <Grid item xs={12} md={9}>
-            <Grid container spacing={2}>
+            <Grid container>
                 <Grid item xs={12}>
                     <Paper>
                         <Grid container spacing={2}>
@@ -120,22 +119,20 @@ const GamePage = ({socket, game}: GamePageProps) => {
                     &nbsp;
                 </Grid>
                 <Grid item xs={12}>
-                    <Paper>
-                        <Container>
-                            <Grid container spacing={1}>
-                                {oldTracks.length > 0 && <>
-                                    <Grid item xs={12}>
-                                        <Typography variant={"h4"} component={"h4"}>Dernières musiques</Typography>
-                                    </Grid>
+                    <Paper style={{padding: 15}}>
+                        <Grid container spacing={2}>
+                            {oldTracks.length > 0 && <>
+                                <Grid item xs={12}>
+                                    <Typography variant={"h4"} component={"h4"}>Dernières musiques</Typography>
+                                </Grid>
 
-                                    {oldTracks.map((item, i) =>
-                                        <Grid item xs={12} key={i}>
-                                            <MusicInfo music={item}/>
-                                        </Grid>
-                                    )}
-                                </>}
-                            </Grid>
-                        </Container>
+                                {oldTracks.map((item, i) =>
+                                    <Grid item xs={12} key={i}>
+                                        <MusicInfo music={item}/>
+                                    </Grid>
+                                )}
+                            </>}
+                        </Grid>
                     </Paper>
                     &nbsp;
                 </Grid>
