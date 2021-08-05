@@ -17,8 +17,6 @@ router.get("/check", (req, res) => {
 
         const spotify = new Spotify()
 
-        console.log(playlistId)
-
         spotify.getPlaylist(playlistId).then(result => {
             res.status(200).json({
                 available: result.items.filter((item: any) => item.track.preview_url !== null),

@@ -61,7 +61,10 @@ const CreateRoom = ({socket, username, open, onClose, setConnected}: Props) => {
             />
         </DialogContent>
         <DialogContent hidden={!check}>
-            {check && check.notAvailable.map(item => <div key={item.track.id}>
+            {check && <span>{check.available.length}/{check.available.length + check.notAvailable.length} musiques disponible</span>}
+        </DialogContent>
+        <DialogContent hidden={!check}>
+            {check && check.notAvailable.length > 0 && check.notAvailable.map(item => <div key={item.track.id}>
                 {item.track.name} by {item.track.artists[0].name}
             </div>)}
         </DialogContent>

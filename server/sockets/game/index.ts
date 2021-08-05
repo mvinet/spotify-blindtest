@@ -110,6 +110,10 @@ const removePlayer = (socket: Socket) => () => {
     const games: Game[] = getGamesForUser(socket.id)
     removePlayerInGame(socket.id)
 
+    if(games.length === 0) {
+        return
+    }
+
     games.forEach((game: Game) => {
         socket.broadcast.emit(GAME_PLAYERS, game.users)
 
